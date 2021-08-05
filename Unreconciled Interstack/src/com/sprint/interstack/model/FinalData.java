@@ -2,15 +2,15 @@ package com.sprint.interstack.model;
 
 public class FinalData {
 	private String txnSource;
-	private long txnId;
+	private String txnId;
 	private String txnDate;
 	private String txnType;
 	private String sku;
 	private String deviceAccessories;
 	private String tmoStoreId;
 	private String sprintStoreId;
-	private long tmoQuantity;
-	private long sprintQuantity;
+	private String tmoQuantity;
+	private String sprintQuantity;
 	private String serialnumber;
 	private String comment;
 	public String getTxnSource() {
@@ -19,10 +19,10 @@ public class FinalData {
 	public void setTxnSource(String txnSource) {
 		this.txnSource = txnSource;
 	}
-	public long getTxnId() {
+	public String getTxnId() {
 		return txnId;
 	}
-	public void setTxnId(long txnId) {
+	public void setTxnId(String txnId) {
 		this.txnId = txnId;
 	}
 	public String getTxnDate() {
@@ -61,16 +61,16 @@ public class FinalData {
 	public void setSprintStoreId(String sprintStoreId) {
 		this.sprintStoreId = sprintStoreId;
 	}
-	public long getTmoQuantity() {
+	public String getTmoQuantity() {
 		return tmoQuantity;
 	}
-	public void setTmoQuantity(long tmoQuantity) {
+	public void setTmoQuantity(String tmoQuantity) {
 		this.tmoQuantity = tmoQuantity;
 	}
-	public long getSprintQuantity() {
+	public String getSprintQuantity() {
 		return sprintQuantity;
 	}
-	public void setSprintQuantity(long sprintQuantity) {
+	public void setSprintQuantity(String sprintQuantity) {
 		this.sprintQuantity = sprintQuantity;
 	}
 	public String getSerialnumber() {

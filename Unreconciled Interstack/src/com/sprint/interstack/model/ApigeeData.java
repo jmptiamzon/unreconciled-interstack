@@ -11,7 +11,7 @@ public class ApigeeData {
 	private String creationDate;
 	private String lastUpdateDate;
 	private String reqPart1;
-	private long transactionNumber;
+	private String transactionNumber;
 	private String reqPart2;
 	private String reqPart3;
 	private String subStrResp;
@@ -79,10 +79,10 @@ public class ApigeeData {
 	public void setReqPart1(String reqPart1) {
 		this.reqPart1 = reqPart1;
 	}
-	public long getTransactionNumber() {
+	public String getTransactionNumber() {
 		return transactionNumber;
 	}
-	public void setTransactionNumber(long transactionNumber) {
+	public void setTransactionNumber(String transactionNumber) {
 		this.transactionNumber = transactionNumber;
 	}
 	public String getReqPart2() {
