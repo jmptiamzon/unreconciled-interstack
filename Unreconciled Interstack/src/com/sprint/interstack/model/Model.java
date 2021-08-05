@@ -5,19 +5,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
 public class Model {
 	
-	public void runQuery(String parameter, List<ApigeeData> apigeeDataContainer) {
+	public void runQuery(String parameter, Map<String, ApigeeData> apigeeDataContainer) {
 		ApigeeData apigeeData = new ApigeeData();
 		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			Connection conn =  
-					DriverManager.getConnection("", "", "");
+					DriverManager.getConnection("","","");
 			
 			//Archive
 			PreparedStatement statement = conn.prepareStatement(
@@ -29,10 +29,12 @@ public class Model {
 					"from SPRN.SPRN_RMS_RES_ADJIO_STG_ar " + 
 					"where 1=1 " + 
 					"AND INTERFACE_NAME in ('TMO_InventoryAdjustment') " + 
-					"and (?" + 
+					"and (" + parameter +
 					") " + 
-					"AND creation_date >sysdate-6 "
+					"AND creation_date >sysdate-6 " +
+					"AND last_update_date = "
 			);
+			
 			
 			ResultSet rs = statement.executeQuery();
 			
@@ -49,15 +51,15 @@ public class Model {
 				apigeeData.setCreationDate(rs.getString(8));
 				apigeeData.setLastUpdateDate(rs.getString(9));
 				apigeeData.setReqPart1(rs.getString(10));
-				apigeeData.setTransactionNumber(rs.getString(11)); // change this
-				apigeeData.setReqPart2(rs.getString(12)); // 
-				apigeeData.setReqPart3(rs.getString(13));
-				apigeeData.setSubStrResp(rs.getString(14));
+				apigeeData.setTransactionNumber(rs.getString(11).replaceAll("[^0-9]", "")); // change this
+				apigeeData.setReqPart2(rs.getString(12));
+				apigeeData.setReqPart3(rs.getString(13));	
+				apigeeData.setSubStrResp("".equals(rs.getString(14).trim()) ? "" : rs.getString(14));
 				apigeeData.setResponse(rs.getString(15));
 				apigeeData.setServerName(rs.getString(16));
 				apigeeData.setRespTime(rs.getString(17));
 				
-				apigeeDataContainer.add(apigeeData);
+				apigeeDataContainer.put(rs.getString(11).replaceAll("[^0-9]", ""), apigeeData);
 			}
 			
 			
@@ -71,7 +73,7 @@ public class Model {
 					"from SPRN.SPRN_RMS_RES_ADJIO_STG " + 
 					"where 1=1 " + 
 					"AND INTERFACE_NAME in ('TMO_InventoryAdjustment') " + 
-					"and (?" + 
+					"and (" + parameter + 
 					") " + 
 					"AND creation_date >sysdate-6 "	
 			);
@@ -91,15 +93,15 @@ public class Model {
 				apigeeData.setCreationDate(rs.getString(8));
 				apigeeData.setLastUpdateDate(rs.getString(9));
 				apigeeData.setReqPart1(rs.getString(10));
-				apigeeData.setTransactionNumber(rs.getString(11)); // change this
-				apigeeData.setReqPart2(rs.getString(12)); // 
+				apigeeData.setTransactionNumber(rs.getString(11).replaceAll("[^0-9]", "")); // change this
+				apigeeData.setReqPart2(rs.getString(12));
 				apigeeData.setReqPart3(rs.getString(13));
-				apigeeData.setSubStrResp(rs.getString(14));
+				apigeeData.setSubStrResp("".equals(rs.getString(14).trim()) ? "" : rs.getString(14));
 				apigeeData.setResponse(rs.getString(15));
 				apigeeData.setServerName(rs.getString(16));
 				apigeeData.setRespTime(rs.getString(17));
 					
-				apigeeDataContainer.add(apigeeData);
+				apigeeDataContainer.put(rs.getString(11).replaceAll("[^0-9]", ""), apigeeData);
 			}
 			
 			
@@ -109,5 +111,40 @@ public class Model {
 			JOptionPane.showMessageDialog(null, "SQL Error: " + e.getMessage());
 		}
 	}
+	
+	
+	public String getJbossError(String txnNo) {
+		String errorMsg = "";
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection conn =  
+					DriverManager.getConnection("","","");
+			
+			PreparedStatement statement = conn.prepareStatement(
+					"select JBOSS_MESSAGE_CODE, JBOSS_MESSAGE_CODE " + 
+					"from sprn.SPRN_TMO_INTSTK_ADJOUT_HDR_INT a, SPRN.SPRN_TMO_INTSTK_ADJOUT_DTL_INT b " + 
+					"where 1 =1 " + 
+					"and a.HEADER_RECORD_ID = b.HEADER_RECORD_ID" + 
+					"and a.transaction_number = '" + txnNo +"' "
+			);
+			
+			ResultSet rs = statement.executeQuery();
+			
+			while (rs.next()) {
+				errorMsg = rs.getString(1) + "-" + rs.getString(2);
+			}
+			
+			
+		} catch (ClassNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "Driver error: " + e.getMessage());
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "SQL Error: " + e.getMessage());
+		}
+
+		
+		return errorMsg;
+	}
+	
 	
 }
