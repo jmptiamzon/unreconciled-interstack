@@ -31,8 +31,7 @@ public class Model {
 					"AND INTERFACE_NAME in ('TMO_InventoryAdjustment') " + 
 					"and (" + parameter +
 					") " + 
-					"AND creation_date >sysdate-6 " +
-					"AND last_update_date = "
+					"AND creation_date >sysdate-6 "
 			);
 			
 			

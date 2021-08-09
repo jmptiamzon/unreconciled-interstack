@@ -86,6 +86,7 @@ public class Controller {
 				}
 				
 				if (ctr == finalDataContainer.size() - 1) {
+					System.out.println(parameter);
 					model.runQuery(parameter, apigeeDataContainer);
 				}
 			}
